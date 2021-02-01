@@ -1,0 +1,24 @@
+##############################
+# CMPT 280
+# Assignment 2
+# Monday, February 1 2021
+#
+# Tyrel Kostyk
+# TCK290
+# 11216033
+##############################
+
+# Question One
+# a)
+
+
+# b)
+
+
+# c)
+
+
+
+# Question Two
+# a)
+
