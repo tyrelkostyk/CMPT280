@@ -35,15 +35,19 @@ public class ArrayedBinaryTreeWithCursors280<I> extends
 
 	@Override
 	public void insert(I x) throws ContainerFull280Exception, DuplicateItems280Exception {
-		// save the initial cursor position
-		CursorPosition280 saved = this.currentPosition();
-
 		// check if the container is full
 		if (this.isFull()) {
 			throw new ContainerFull280Exception("The item could not be inserted because the container is full.");
 		}
 
-		// go to the end of the array
+		// check if the container already has x
+		if (this.has(x)) {
+			throw new DuplicateItems280Exception("The item could not be inserted because the item is already in the container.");
+		}
+
+		// save the initial cursor position
+		CursorPosition280 saved = this.currentPosition();
+
 		this.goAfter();
 
 		// insert the new item
@@ -58,21 +62,79 @@ public class ArrayedBinaryTreeWithCursors280<I> extends
 
 	@Override
 	public void deleteItem() throws NoCurrentItem280Exception {
-		// TODO - Implement this method
+		// check if the container is empty
+		if (this.isEmpty()) {
+			throw new NoCurrentItem280Exception("The item could not be deleted because the container is empty.");
+		}
 
+		// check if the item exists
+		if (!this.itemExists()) {
+			throw new NoCurrentItem280Exception("The item could not be deleted because the item does not exist.");
+		}
+
+		// if pointing at the last item, delete it and move cursor
+		if (this.currentNode == this.count) {
+			this.items[this.currentNode] = null;
+			this.currentNode--;
+
+		// otherwise just replace the current item with the last item in the container, then delete last item
+		} else {
+			this.items[this.currentNode] = this.items[this.count];
+			this.items[this.count] = null;
+		}
+
+		// decrement the size of the container
+		this.count--;
 	}
 
 	@Override
 	public void delete(I x) throws ItemNotFound280Exception {
-		// TODO - Implement this method
+		// check if the container is empty
+		if (this.isEmpty()) {
+			throw new ItemNotFound280Exception("The given item could not be deleted because the container is empty.");
+		}
 
+		// save the initial cursor position
+		CursorPosition280 saved = this.currentPosition();
+
+		// start search from the beginning of the container
+		this.goFirst();
+
+		// loop until the end of the container OR until x is found
+		while(this.itemExists()) {
+			if(membershipEquals(this.item(), x)) {
+				// delete the item
+				this.deleteItem();
+				// return the cursor to the original position
+				this.goPosition(saved);
+				return;
+			}
+			this.goForth();
+		}
+
+		// return the cursor to the original position
+		this.goPosition(saved);
+		throw new ItemNotFound280Exception("The given item could not be deleted because the given item could not be found.");
 	}
 
 
 	@Override
 	public boolean has(I y) {
-		// TODO - Implement this method
-		return false; // this line is a placeholder to prevent a compiler error.  Remove as needed.
+		// check if the container is empty
+		if (this.isEmpty()) {
+			return false;
+		}
+
+		try {
+			// if this value could be obtained, then it exists in the container
+			if (membershipEquals(y, this.obtain(y))) {
+				return true;
+			}
+		} catch(ItemNotFound280Exception e) {
+			return false;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -82,45 +144,57 @@ public class ArrayedBinaryTreeWithCursors280<I> extends
 
 	@Override
 	public void search(I x) {
-		// TODO - Implement this method
+		// save the initial cursor position
+		CursorPosition280 saved = this.currentPosition();
 
+		// loop until the end of the container OR until x is found
+		while(!membershipEquals(this.item(), x)) {
+			if(!this.itemExists()) {
+				// return the cursor to the original position
+				this.goPosition(saved);
+				return;
+			}
+			this.goForth();
+		}
 	}
 
 
 	@Override
 	public boolean before() {
-		// TODO - Implement this method
-		return false; // this line is a placeholder to prevent a compiler error.  Remove as needed.
+		return (this.currentNode == 0 || this.isEmpty());
 	}
 
 	@Override
 	public boolean after() {
-		// TODO - Implement this method
-		return false; // this line is a placeholder to prevent a compiler error.  Remove as needed.
+		return (this.currentNode == this.count()+1 || this.isEmpty());
 	}
 
 	@Override
 	public void goForth() throws AfterTheEnd280Exception {
-		// TODO - Implement this method
+		if (this.currentNode == this.count()+1) {
+			throw new AfterTheEnd280Exception("Could not move cursor forward because the cursor is already pointing to the end of the container.");
+		}
 
+		this.currentNode++;
 	}
 
 	@Override
 	public void goFirst() throws ContainerEmpty280Exception {
-		// TODO - Implement this method
+		if (this.isEmpty()) {
+			throw new ContainerEmpty280Exception("Could not move cursor to first item because the container is empty.");
+		}
 
+		this.currentNode = 1;
 	}
 
 	@Override
 	public void goBefore() {
-		// TODO - Implement this method
-
+		this.currentNode = 0;
 	}
 
 	@Override
 	public void goAfter() {
-		// TODO - Implement this method
-
+		this.currentNode = this.count()+1;
 	}
 
 	@Override
@@ -153,7 +227,12 @@ public class ArrayedBinaryTreeWithCursors280<I> extends
 	 * @throws InvalidState280Exception when the cursor is on the root already.
 	 */
 	public void parent() throws InvalidState280Exception {
-        // TODO - Implement this method
+		if (this.currentNode < 2) {
+			throw new InvalidState280Exception("Could not return parent because the current node is already on the root.");
+		}
+
+		// find the parent
+		this.currentNode = this.currentNode / 2;
 	}
 
 	/**
@@ -164,7 +243,23 @@ public class ArrayedBinaryTreeWithCursors280<I> extends
 	 * @throws InvalidState280Exception if the current node has no left child.
 	 */
 	public void goLeftChild()  throws InvalidState280Exception, ContainerEmpty280Exception {
-        // TODO - Implement this method
+		// check if the container is empty
+		if (this.isEmpty()) {
+			throw new ContainerEmpty280Exception("Could not move cursor to left child because the container is empty.");
+		}
+
+		// save the initial cursor position
+		CursorPosition280 saved = this.currentPosition();
+
+		// go to the left child
+		this.currentNode = (this.currentNode * 2);
+
+		// return cursor and throw exception if left child doesn't exist
+		if (!this.itemExists()) {
+			// return the cursor to the original position
+			this.goPosition(saved);
+			throw new InvalidState280Exception("Could not move cursor to left child because the left child does not exist.");
+		}
 	}
 
 	/**
@@ -175,7 +270,23 @@ public class ArrayedBinaryTreeWithCursors280<I> extends
 	 * @throws InvalidState280Exception if the current item has no right child.
 	 */
 	public void goRightChild() throws InvalidState280Exception, ContainerEmpty280Exception {
-        // TODO - Implement this method
+		// check if the container is empty
+		if (this.isEmpty()) {
+			throw new ContainerEmpty280Exception("Could not move cursor to right child because the container is empty.");
+		}
+
+		// save the initial cursor position
+		CursorPosition280 saved = this.currentPosition();
+
+		// go to the right child
+		this.currentNode = (this.currentNode * 2) + 1;
+
+		// return cursor and throw exception if right child doesn't exist
+		if (!this.itemExists()) {
+			// return the cursor to the original position
+			this.goPosition(saved);
+			throw new InvalidState280Exception("Could not move cursor to right child because the left child does not exist.");
+		}
 	}
 
 	/**
@@ -186,8 +297,24 @@ public class ArrayedBinaryTreeWithCursors280<I> extends
 	 * @throws InvalidState280Exception if the current item has no sibling.
 	 */
 	public void goSibling() throws InvalidState280Exception, ContainerEmpty280Exception {
-        // TODO - Implement this method
+		// check if the container is empty
+		if (this.isEmpty()) {
+			throw new ContainerEmpty280Exception("Could not move cursor to sibling because the container is empty.");
+		}
 
+		// left children always have an even index
+		boolean isLeftChild = ((this.currentNode % 2) == 0);
+
+		// first go to parent
+		this.parent();
+
+		// if left child; go to right child
+		if (isLeftChild) {
+			goRightChild();
+		} else {
+			// if right child; go to left child
+			goLeftChild();
+		}
 	}
 
 	/**
@@ -197,7 +324,12 @@ public class ArrayedBinaryTreeWithCursors280<I> extends
 	 * @throws ContainerEmpty280Exception if the tree is empty.
 	 */
 	public void root() throws ContainerEmpty280Exception {
-        // TODO - Implement this method
+		// check if the container is empty
+		if (this.isEmpty()) {
+			throw new ContainerEmpty280Exception("Could not move cursor to right child because the container is empty.");
+		}
+
+		this.currentNode = 1;
 	}
 
 
