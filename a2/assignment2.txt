@@ -8,17 +8,64 @@
 # 11216033
 ##############################
 
-# Question One
-# a)
+## Question One
+a) O(2^n)
+
+b) O(n^4)
 
 
-# b)
+c) O(nlog(n))
 
 
-# c)
+## Question Two
+a)  1. False
+    2. False
+    3. True
+    4. True
+
+b) theta(n^3)
 
 
+## Question Three
+a) O(n^2)
+b) O(2^n)
+c) O(n^3)
+d) O(n^2 log(n))
 
-# Question Two
-# a)
+
+## Question Four
+a)
+pre-first loop
+    - set i = 1
+    - check i <= n
+    - increment i
+    = 3 statements (at least once)
+-> 3 statements (independant of n)
+
+enter first loop (n times)
+    pre-second loop
+    - set j = 1
+    - check j <= n
+    - increment j
+    = 3 statements (at least once)
+-> 3 statements per n (in first loop)
+
+enter second loop
+    = 1 statement (n times)
+re-check second loop
+    - check j <= n
+    - increment j
+    = 2 statements (n times)
+-> 3 statements per n (within nested loop)
+
+re-check first loop
+    - check i <= n
+    - increment i
+    = 2 statements (n times)
+-> 2 more statements per n (in first loop)
+
+
+T(n) = 3 + n * ( 3 + (n * (3)) + 2 )
+     = 3 + 5n + 3n^2
+     = O(n^2)
 
