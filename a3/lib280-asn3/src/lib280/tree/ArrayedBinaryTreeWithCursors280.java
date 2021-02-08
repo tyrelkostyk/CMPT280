@@ -35,7 +35,25 @@ public class ArrayedBinaryTreeWithCursors280<I> extends
 
 	@Override
 	public void insert(I x) throws ContainerFull280Exception, DuplicateItems280Exception {
-		// TODO - Implement this method
+		// save the initial cursor position
+		CursorPosition280 saved = this.currentPosition();
+
+		// check if the container is full
+		if (this.isFull()) {
+			throw new ContainerFull280Exception("The item could not be inserted because the container is full.");
+		}
+
+		// go to the end of the array
+		this.goAfter();
+
+		// insert the new item
+		items[currentNode] = x;
+
+		// increase the size of the container
+		count++;
+
+		// return the cursor to the original position
+		this.goPosition(saved);
 	}
 
 	@Override
