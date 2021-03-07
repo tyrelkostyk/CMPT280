@@ -1,5 +1,8 @@
 package lib280.dispenser;
 
+import lib280.exception.ContainerEmpty280Exception;
+import lib280.exception.ContainerFull280Exception;
+import lib280.tree.ArrayedBinaryTreeIterator280;
 import lib280.tree.IterableArrayedHeap280;
 
 public class PriorityQueue280<I extends Comparable<? super I>> {
@@ -10,7 +13,7 @@ public class PriorityQueue280<I extends Comparable<? super I>> {
 	
 	
 	/**
-	 * Create a new priorty queue with a given capacity.
+	 * Create a new priority queue with a given capacity.
 	 * @param cap The maximum number of items that can be in the queue.
 	 */
 	public PriorityQueue280(int cap) {
@@ -23,7 +26,148 @@ public class PriorityQueue280<I extends Comparable<? super I>> {
 
 	// TODO
 	// Add Priority Queue ADT methods (from the specification) here.
-	
+
+	/**
+	 * Insert item I into Priority Queue.
+	 * @precond !isFull()
+	 * @throws ContainerFull280Exception if the Priority Queue is full.
+	 * @param item the item to be inserted.
+	 */
+	public void insert(I item) throws ContainerFull280Exception {
+		if ( isFull() )
+			throw new ContainerFull280Exception("Cannot add item to a Priority Queue that is full.");
+
+		items.insert(item);
+	}
+
+
+	/**
+	 * Confirm if the Priority Queue is full.
+	 * @return true if the Priority Queue is full.
+	 */
+	public boolean isFull() {
+		return items.isFull();
+	}
+
+
+	/**
+	 * Confirm if the Priority Queue is empty.
+	 * @return true if the Priority Queue is empty.
+	 */
+	public boolean isEmpty() {
+		return items.isEmpty();
+	}
+
+
+	/**
+	 * Get the number of items currently in the Priority Queue.
+	 * @return the number of items currently in the Priority Queue.
+	 */
+	public int count() {
+		return items.count();
+	}
+
+
+	/**
+	 * Get the maximum priority item from the Priority Queue.
+	 * @precond !isEmpty()
+	 * @throws ContainerEmpty280Exception if the queue is empty.
+	 * @return The maximum priority item from the Priority Queue.
+	 */
+	public I maxItem() throws ContainerEmpty280Exception {
+		if ( isEmpty() )
+			throw new ContainerEmpty280Exception("Cannot return max priority item of an empty Priority Queue.");
+
+		// create and use an iterator to go to the first item in the Priority Queue
+		ArrayedBinaryTreeIterator280<I> iterator = items.iterator();
+		iterator.goFirst();
+
+		return items.item();
+	}
+
+
+	/**
+	 * Get the minimum priority item from the Priority Queue.
+	 * @precond !isEmpty()
+	 * @throws ContainerEmpty280Exception if the queue is empty.
+	 * @return The minimum priority item from the Priority Queue.
+	 */
+	public I minItem() throws ContainerEmpty280Exception {
+		if ( isEmpty() )
+			throw new ContainerEmpty280Exception("Cannot return min priority item of an empty Priority Queue.");
+
+		// create and use an iterator to go to the last item in the Priority Queue
+		ArrayedBinaryTreeIterator280<I> iterator = items.iterator();
+		iterator.goLast();
+
+		return items.item();
+	}
+
+
+	/**
+	 * Delete the maximum priority item from the Priority Queue.
+	 * @precond !isEmpty()
+	 * @throws ContainerEmpty280Exception if the queue is empty.
+	 */
+	public void deleteMax() throws ContainerEmpty280Exception {
+		if ( isEmpty() )
+			throw new ContainerEmpty280Exception("Cannot delete max priority item of an empty Priority Queue.");
+
+		// create and use an iterator to go to the first item in the Priority Queue
+		ArrayedBinaryTreeIterator280<I> iterator = items.iterator();
+		iterator.goFirst();
+
+		items.deleteAtPosition(iterator);
+	}
+
+
+	/**
+	 * Delete the minimum priority item from the Priority Queue.
+	 * @precond !isEmpty()
+	 * @throws ContainerEmpty280Exception if the queue is empty.
+	 */
+	public void deleteMin() throws ContainerEmpty280Exception {
+		if ( isEmpty() )
+			throw new ContainerEmpty280Exception("Cannot delete minimum priority item of an empty Priority Queue.");
+
+		// create and use an iterator to go to the last item in the Priority Queue
+		ArrayedBinaryTreeIterator280<I> iterator = items.iterator();
+		iterator.goLast();
+
+		items.deleteAtPosition(iterator);
+	}
+
+
+	/**
+	 * Delete all occurrences of the highest priority item from the Priority Queue.
+	 * @precond !isEmpty()
+	 * @throws ContainerEmpty280Exception if the queue is empty.
+	 */
+	public void deleteAllMax() throws ContainerEmpty280Exception {
+		if ( isEmpty() )
+			throw new ContainerEmpty280Exception("Cannot delete max priority items of an empty Priority Queue.");
+
+		// create and use an iterator to go to the first item in the Priority Queue
+		ArrayedBinaryTreeIterator280<I> iterator = items.iterator();
+		iterator.goFirst();
+
+		// create a copy of the original highest priority item
+		I maxPriorityItem = iterator.item();
+
+		// continue deleting the first (aka highest priority item) while it is equal to the original first item
+		while (iterator.item().compareTo(maxPriorityItem) == 0) {
+			// delete the item
+			items.deleteAtPosition(iterator);
+
+			// if the Priority Queue is now empty, then exit
+			if ( isEmpty() )
+				return;
+
+			// otherwise, continue on to the next highest priority item
+			iterator.goFirst();
+		}
+	}
+
 
 	/* UNCOMMENT THE REGRESSION TEST WHEN YOU ARE READY
 

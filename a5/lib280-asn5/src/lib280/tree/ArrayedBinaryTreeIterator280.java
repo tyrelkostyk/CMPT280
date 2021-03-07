@@ -22,6 +22,7 @@ public class ArrayedBinaryTreeIterator280<I> extends ArrayedBinaryTreePosition28
 		this.tree = t;
 	}
 
+
 	/**
 	 * Confirm if the cursor is currently located before the data structure.
 	 * @return true if the cursor is located before the data structure.
@@ -30,6 +31,7 @@ public class ArrayedBinaryTreeIterator280<I> extends ArrayedBinaryTreePosition28
 	public boolean before() {
 		return this.currentNode == 0;
 	}
+
 
 	/**
 	 * Confirm if the cursor is currently located after the data structure.
@@ -40,10 +42,11 @@ public class ArrayedBinaryTreeIterator280<I> extends ArrayedBinaryTreePosition28
 		return this.currentNode > tree.count || tree.isEmpty();
 	}
 
+
 	/**
 	 * Move the cursor ahead one step.
 	 * @precond !after()
-	 * @throws AfterTheEnd280Exception
+	 * @throws AfterTheEnd280Exception if the cursor is after the final item in the tree.
 	 */
 	@Override
 	public void goForth() throws AfterTheEnd280Exception {
@@ -53,10 +56,11 @@ public class ArrayedBinaryTreeIterator280<I> extends ArrayedBinaryTreePosition28
 		this.currentNode++;
 	}
 
+
 	/**
 	 * Move the cursor to the first item in the data structure.
 	 * @precond !tree.isEmpty()
-	 * @throws ContainerEmpty280Exception
+	 * @throws ContainerEmpty280Exception if the tree is empty.
 	 */
 	@Override
 	public void goFirst() throws ContainerEmpty280Exception {
@@ -66,6 +70,20 @@ public class ArrayedBinaryTreeIterator280<I> extends ArrayedBinaryTreePosition28
 		this.currentNode = 1;
 	}
 
+
+	/**
+	 * Move the cursor to the last item in the data structure.
+	 * @precond !tree.isEmpty()
+	 * @throws ContainerEmpty280Exception if the tree is empty.
+	 */
+	public void goLast() throws ContainerEmpty280Exception {
+		if ( tree.isEmpty() )
+			throw new ContainerEmpty280Exception("Cannot move to first item of an empty tree.");
+
+		this.currentNode = tree.count;
+	}
+
+
 	/**
 	 * Move the cursor to before the data structure.
 	 */
@@ -74,6 +92,9 @@ public class ArrayedBinaryTreeIterator280<I> extends ArrayedBinaryTreePosition28
 		this.currentNode = 0;
 	}
 
+	/**
+	 * Move the cursor to after the data structure.
+	 */
 	@Override
 	public void goAfter() {
 		if ( tree.isEmpty() )
@@ -81,6 +102,7 @@ public class ArrayedBinaryTreeIterator280<I> extends ArrayedBinaryTreePosition28
 		else
 			this.currentNode = tree.count + 1;
 	}
+
 
 	/**
 	 * Return the item currently being pointed to.
@@ -95,6 +117,7 @@ public class ArrayedBinaryTreeIterator280<I> extends ArrayedBinaryTreePosition28
 
 		return tree.item();
 	}
+
 
 	/**
 	 * Confirm if the item currently being pointed to exists.
