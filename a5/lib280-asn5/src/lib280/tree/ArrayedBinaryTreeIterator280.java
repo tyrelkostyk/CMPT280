@@ -54,7 +54,6 @@ public class ArrayedBinaryTreeIterator280<I> extends ArrayedBinaryTreePosition28
 			throw new AfterTheEnd280Exception("Cannot advance cursor in the after position.");
 
 		this.currentNode++;
-//		tree.currentNode = this.currentNode;
 	}
 
 
@@ -69,31 +68,15 @@ public class ArrayedBinaryTreeIterator280<I> extends ArrayedBinaryTreePosition28
 			throw new ContainerEmpty280Exception("Cannot move to first item of an empty tree.");
 
 		this.currentNode = 1;
-//		tree.currentNode = this.currentNode;
 	}
 
 
-//	/**
-//	 * Move the cursor to the last item in the data structure.
-//	 * @precond !tree.isEmpty()
-//	 * @throws ContainerEmpty280Exception if the tree is empty.
-//	 */
-//	public void goLast() throws ContainerEmpty280Exception {
-//		if ( tree.isEmpty() )
-//			throw new ContainerEmpty280Exception("Cannot move to first item of an empty tree.");
-//
-//		this.currentNode = (tree.count + 1) / 2;
-////		tree.currentNode = this.currentNode;
-//	}
-//
-//
 	/**
 	 * Move the cursor to before the data structure.
 	 */
 	@Override
 	public void goBefore() {
 		this.currentNode = 0;
-//		tree.currentNode = this.currentNode;
 	}
 
 	/**
@@ -105,8 +88,6 @@ public class ArrayedBinaryTreeIterator280<I> extends ArrayedBinaryTreePosition28
 			this.currentNode = 0;
 		else
 			this.currentNode = tree.count + 1;
-
-//		tree.currentNode = this.currentNode;
 	}
 
 
@@ -118,10 +99,21 @@ public class ArrayedBinaryTreeIterator280<I> extends ArrayedBinaryTreePosition28
 	 */
 	@Override
 	public I item() throws NoCurrentItem280Exception {
+		// store previous node, then update the trees node to that of the iterator
+		int previousNode = tree.currentNode;
+		tree.currentNode = this.currentNode;
+
+		// confirm that the item at iterator's position exists
 		if ( !tree.itemExists() )
 			throw new NoCurrentItem280Exception("Cannot return an item that does not exist.");
 
-		return tree.item();
+		// grab the item at iterator's position
+		I item = tree.item();
+
+		// restore the tree's original position
+		tree.currentNode = previousNode;
+
+		return item;
 	}
 
 
@@ -131,7 +123,17 @@ public class ArrayedBinaryTreeIterator280<I> extends ArrayedBinaryTreePosition28
 	 */
 	@Override
 	public boolean itemExists() {
-		return tree.itemExists();
+		// store previous node, then update the trees node to that of the iterator
+		int previousNode = tree.currentNode;
+		tree.currentNode = this.currentNode;
+
+		// confirm that the item at iterator's position exists
+		boolean itemExists = tree.itemExists();
+
+		// restore the tree's original position
+		tree.currentNode = previousNode;
+
+		return itemExists;
 	}
 
 

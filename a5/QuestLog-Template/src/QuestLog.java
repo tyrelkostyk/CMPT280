@@ -63,7 +63,7 @@ public class QuestLog extends KeyedChainedHashTable280<String, QuestLogEntry> {
 		return keys;
 	}
 
-	
+
 	/**
 	 * Format the quest log as a string which displays the quests in the log in 
 	 * alphabetical order by name.
@@ -133,7 +133,7 @@ public class QuestLog extends KeyedChainedHashTable280<String, QuestLogEntry> {
 		CSVReader inFile;
 		try {
 			//input filename on the next line - path must be relative to the working directory reported above.
-			inFile = new CSVReader(new FileReader("questLog/quests4.csv"));
+			inFile = new CSVReader(new FileReader("../../../git-repos/CMPT280/a5/QuestLog-Template/quests4.csv"));
 		} catch (FileNotFoundException e) {
 			System.out.println("Error: File not found.");
 			return;

@@ -104,13 +104,11 @@ public class PriorityQueue280<I extends Comparable<? super I>> {
 		I minItem = iterator.item();
 
 		// loop through all items in the Priority Queue
-		while ( !iterator.after() ) {
-			// grab the current item temporarily
-			I tempItem = iterator.item();
+		while ( iterator.itemExists() && !iterator.after() ) {
 
-			// if the temp item is smaller, then use it as the current min item
-			if ( minItem.compareTo(tempItem) > 0 )
-				minItem = tempItem;
+			// if current minItem is larger than this new item, update minItem
+			if ( minItem.compareTo(iterator.item()) > 0 )
+				minItem = iterator.item();
 
 			// continue to the next item
 			iterator.goForth();
@@ -149,22 +147,24 @@ public class PriorityQueue280<I extends Comparable<? super I>> {
 
 		// create and use two iterators to find the min priority item in the Priority Queue
 		ArrayedBinaryTreeIterator280<I> iterator = items.iterator();
-		ArrayedBinaryTreeIterator280<I> minLocation;
+
 		// start at the first item in the Priority Queue
 		iterator.goFirst();
-		minLocation = iterator;
+
+		// grab the minimum item
+		I minItem = minItem();
 
 		// loop through all items in the Priority Queue
-		while ( !iterator.after() ) {
-			// if the temp iterator's item is smaller, then update the current min iterator
-			if ( minLocation.item().compareTo(iterator.item()) > 0 )
-				minLocation = iterator;
+		while ( iterator.itemExists() && !iterator.after() ) {
+			// once the minimum item is found, call the delete function on its position
+			if ( iterator.item().compareTo(minItem) == 0 ) {
+				items.deleteAtPosition(iterator);
+				return;
+			}
 
 			// go to the next item
 			iterator.goForth();
 		}
-
-		items.deleteAtPosition(minLocation);
 	}
 
 
