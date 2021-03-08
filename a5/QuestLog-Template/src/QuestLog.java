@@ -119,13 +119,15 @@ public class QuestLog extends KeyedChainedHashTable280<String, QuestLogEntry> {
 			itemListLocation = hashArray[itemHashLocation].iterator();
 		}
 
+		itemsChecked++;
 		while (!itemListLocation.after() && k.compareTo(itemListLocation.item().key()) != 0 ) {
 			itemListLocation.goForth();
 			itemsChecked++;
 		}
 
 		// update the pair and return it
-		pair.setFirstItem(item());
+		if (itemExists())
+			pair.setFirstItem(item());
 		pair.setSecondItem(itemsChecked);
 		return pair;
 	}
@@ -177,16 +179,47 @@ public class QuestLog extends KeyedChainedHashTable280<String, QuestLogEntry> {
 		
 		// Print out the lib280.tree quest log's quests in alphabetical order.
 		// COMMENT THIS OUT when you're testing the file with 100,000 quests.  It takes way too long.
-	    System.out.println(treeQuestLog.toStringInorder());
-		
+//	    System.out.println(treeQuestLog.toStringInorder());
 
-		// TODO Determine the average number of elements examined during access for hashed quest log.
-	    // (call hashQuestLog.obtainWithCount() for each quest in the log and find average # of access)
-		
-		
-		// TODO Determine the average number of elements examined during access for lib280.tree quest log.
-	    // (call treeQuestLog.searchCount() for each quest in the log and find average # of access)
-		
+
+		/* Testing Hashed QuestLog */
+		Pair280 results = new Pair280(null, 0);
+		results.setFirstItem(null);
+		results.setSecondItem(0);
+		int questCount = 0;
+		int searchesTotal = 0;
+		double searchesAverage = 0.0;
+
+		for (String key : hashQuestLog.keys()) {
+			results = hashQuestLog.obtainWithCount(key);
+			if (results.firstItem() != null) {
+				questCount++;
+				searchesTotal += (int)results.secondItem();
+			}
+		}
+
+		searchesAverage = ((double)searchesTotal / (double)questCount);
+		System.out.println("Hashed Quest Log: Avg items examined per query, with " + hashQuestLog.count() + " entries: " + searchesAverage);
+
+
+		/* Testing lib280.tree quest log */
+		results.setFirstItem(null);
+		results.setSecondItem(0);
+		questCount = 0;
+		searchesTotal = 0;
+
+		treeQuestLog.rootItem();
+		for (String key : hashQuestLog.keys()) {
+			results = hashQuestLog.obtainWithCount(key);
+			if (results.firstItem() != null) {
+				questCount++;
+				searchesTotal += treeQuestLog.searchCount((QuestLogEntry) results.firstItem());
+			}
+		}
+
+		searchesAverage = ((double)searchesTotal / (double)questCount);
+		System.out.println("Tree Quest Log: Avg items examined per query, with " + hashQuestLog.count() + " entries: " + searchesAverage);
+
 	}
 	
 	
