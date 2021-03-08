@@ -6,6 +6,7 @@ import lib280.tree.OrderedSimpleTree280;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 
 // This project uses a JAR called opencsv which is a library for reading and
 // writing CSV (comma-separated value) files.
@@ -40,10 +41,28 @@ public class QuestLog extends KeyedChainedHashTable280<String, QuestLogEntry> {
 	 * @return The array of keys (quest names) from the quest log.
 	 */
 	public String[] keys() {
-		// TODO Implement this method.
-		
-		return null;  // Remove this line you're ready.  It's just to prevent compiler errors.
+		String[] keys = new String[count];
+		int keyIndex = 0;
+
+		// for every index in the hashArray, check for data items
+		for (int i = 0; i < this.hashArray.length; i++) {
+			// if this index holds a valid non-empty linked list, store all the keys into the keys array
+			if ( this.hashArray[i] != null && !this.hashArray[i].isEmpty() ) {
+				// start at the beginning of the linked list
+				this.hashArray[i].goFirst();
+				// save every key in the linked list
+				while (this.hashArray[i].itemExists()) {
+					// prevent array out of bounds exception (should never happen)
+					if (keyIndex >= count) return keys;
+					keys[keyIndex++] = this.hashArray[i].item().questName;
+					this.hashArray[i].goForth();
+				}
+			}
+		}
+
+		return keys;
 	}
+
 	
 	/**
 	 * Format the quest log as a string which displays the quests in the log in 
@@ -52,12 +71,32 @@ public class QuestLog extends KeyedChainedHashTable280<String, QuestLogEntry> {
 	 * @return A nicely formatted quest log.
 	 */
 	public String toString() {
-		// TODO Implement this method.
-		
-		// Remove this line you're ready.  It's just to prevent compiler errors.
-		return "QuestLog.toString() not implemented yet!\n";  
+		// Create, fill, and sort an array of all of the keys in the Quest Log
+		String[] questNames = this.keys();
+		Arrays.sort(questNames);
+
+		String fullQuestLog = "";
+
+		// iterate through every quest
+		for ( String questName : questNames ) {
+			// obtain the quest from the quest log
+			QuestLogEntry quest = this.obtain(questName);
+
+			// obtain the quest details
+			String questArea = quest.getQuestArea();
+			int questMinLvl = quest.getRecommendedMinLevel();
+			int questMaxLvl = quest.getRecommendedMaxLevel();
+
+			// append the details to the full Quest Log
+			fullQuestLog += "\n" + questName + " : " + questArea + ", Level Range: " + questMinLvl + "-" + questMaxLvl;
+		}
+
+		// return the full quest log
+		fullQuestLog += "\n";
+		return fullQuestLog;
 	}
-	
+
+
 	/**
 	 * Obtain the quest with name k, while simultaneously returning the number of
 	 * items examined while searching for the quest.
