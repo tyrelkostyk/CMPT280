@@ -23,11 +23,11 @@ public class IterableArrayedHeap280<I extends Comparable<? super I>> extends Arr
 
 	/**
 	 * Delete the item at the specified position.
-	 * @param item An ArrayedBinaryTreeIterator280 object, pointing to the item to be deleted.
+	 * @param iter An ArrayedBinaryTreeIterator280 object, pointing to the item to be deleted.
 	 * @precond !isEmpty(). The cursor position must be valid.
 	 * @throws ContainerEmpty280Exception if the heap is empty.
 	 */
-	public void deleteAtPosition(ArrayedBinaryTreeIterator280<I> item) throws ContainerEmpty280Exception {
+	public void deleteAtPosition(ArrayedBinaryTreeIterator280<I> iter) throws ContainerEmpty280Exception {
 		if ( this.isEmpty() )
 			throw new ContainerEmpty280Exception("Cannot delete an item from an empty heap.");
 
@@ -37,7 +37,7 @@ public class IterableArrayedHeap280<I extends Comparable<? super I>> extends Arr
 
 		if ( this.count > 1 ) {
 			/* This is functional difference #1 from ArrayedHeap280's deleteItem() function */
-			this.currentNode = item.currentNode;
+			this.currentNode = iter.currentNode;
 			this.items[currentNode] = this.items[count];
 		}
 		this.count--;
@@ -45,7 +45,6 @@ public class IterableArrayedHeap280<I extends Comparable<? super I>> extends Arr
 		// If we deleted the last remaining item, make the the current item invalid, and we're done.
 		if ( this.count == 0 ) {
 			this.currentNode = 0;
-			item.currentNode = 0;	// TODO: ??
 			return;
 		}
 
@@ -73,7 +72,5 @@ public class IterableArrayedHeap280<I extends Comparable<? super I>> extends Arr
 			else return;
 
 		}
-
 	}
-	
 }

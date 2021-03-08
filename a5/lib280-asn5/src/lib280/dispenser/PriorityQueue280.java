@@ -82,7 +82,7 @@ public class PriorityQueue280<I extends Comparable<? super I>> {
 		ArrayedBinaryTreeIterator280<I> iterator = items.iterator();
 		iterator.goFirst();
 
-		return items.item();
+		return iterator.item();
 	}
 
 
@@ -98,9 +98,26 @@ public class PriorityQueue280<I extends Comparable<? super I>> {
 
 		// create and use an iterator to go to the last item in the Priority Queue
 		ArrayedBinaryTreeIterator280<I> iterator = items.iterator();
-		iterator.goLast();
 
-		return items.item();
+		// grab the first item in the Priority Queue
+		iterator.goFirst();
+		I minItem = iterator.item();
+
+		// loop through all items in the Priority Queue
+		while ( !iterator.after() ) {
+			// grab the current item temporarily
+			I tempItem = iterator.item();
+
+			// if the temp item is smaller, then use it as the current min item
+			if ( minItem.compareTo(tempItem) > 0 )
+				minItem = tempItem;
+
+			// continue to the next item
+			iterator.goForth();
+		}
+
+		// return the smallest item
+		return minItem;
 	}
 
 
@@ -130,11 +147,24 @@ public class PriorityQueue280<I extends Comparable<? super I>> {
 		if ( isEmpty() )
 			throw new ContainerEmpty280Exception("Cannot delete minimum priority item of an empty Priority Queue.");
 
-		// create and use an iterator to go to the last item in the Priority Queue
+		// create and use two iterators to find the min priority item in the Priority Queue
 		ArrayedBinaryTreeIterator280<I> iterator = items.iterator();
-		iterator.goLast();
+		ArrayedBinaryTreeIterator280<I> minLocation;
+		// start at the first item in the Priority Queue
+		iterator.goFirst();
+		minLocation = iterator;
 
-		items.deleteAtPosition(iterator);
+		// loop through all items in the Priority Queue
+		while ( !iterator.after() ) {
+			// if the temp iterator's item is smaller, then update the current min iterator
+			if ( minLocation.item().compareTo(iterator.item()) > 0 )
+				minLocation = iterator;
+
+			// go to the next item
+			iterator.goForth();
+		}
+
+		items.deleteAtPosition(minLocation);
 	}
 
 
@@ -169,8 +199,6 @@ public class PriorityQueue280<I extends Comparable<? super I>> {
 	}
 
 
-	/* UNCOMMENT THE REGRESSION TEST WHEN YOU ARE READY
-
 	public static void main(String args[]) {
 		class PriorityItem<I> implements Comparable<PriorityItem<I>> {
 			I item;
@@ -195,102 +223,100 @@ public class PriorityQueue280<I extends Comparable<? super I>> {
 		
 		// Test isEmpty()
 		if( !Q.isEmpty()) 
-			System.out.println("Error: Queue is empty, but isEmpty() says it isn't.");
+			System.out.println("Error (1): Queue is empty, but isEmpty() says it isn't.");
 		
 		// Test insert() and maxItem()
 		Q.insert(new PriorityItem<String>("Sing", 5.0));
 		if( Q.maxItem().item.compareTo("Sing") != 0) {
-			System.out.println("??Error: Front of queue should be 'Sing' but it's not. It is: " + Q.maxItem().item);
+			System.out.println("Error (2): Front of queue should be 'Sing' but it's not. It is: " + Q.maxItem().item);
 		}
 		
 		// Test isEmpty() when queue not empty
 		if( Q.isEmpty()) 
-			System.out.println("Error: Queue is not empty, but isEmpty() says it is.");
+			System.out.println("Error (3): Queue is not empty, but isEmpty() says it is.");
 		
 		// test count()
 		if( Q.count() != 1 ) {
-			System.out.println("Error: Count should be 1 but it's not.");			
+			System.out.println("Error (4): Count should be 1 but it's not.");
 		}
 
 		// test minItem() with one element
 		if( Q.minItem().item.compareTo("Sing")!=0) {
-			System.out.println("Error: min priority item should be 'Sing' but it's not.");
+			System.out.println("Error (5): min priority item should be 'Sing' but it's not.");
 		}	
 		
 		// insert more items
 		Q.insert(new PriorityItem<String>("Fly", 5.0));
-		if( Q.maxItem().item.compareTo("Sing")!=0) System.out.println("Front of queue should be 'Sing' but it's not.");
+		if( Q.maxItem().item.compareTo("Sing")!=0) System.out.println("Error (6): Front of queue should be 'Sing' but it's not.");
 		Q.insert(new PriorityItem<String>("Dance", 3.0));
-		if( Q.maxItem().item.compareTo("Sing")!=0) System.out.println("Front of queue should be 'Sing' but it's not.");
+		if( Q.maxItem().item.compareTo("Sing")!=0) System.out.println("Error (7): Front of queue should be 'Sing' but it's not.");
 		Q.insert(new PriorityItem<String>("Jump", 7.0));
-		if( Q.maxItem().item.compareTo("Jump")!=0) System.out.println("Front of queue should be 'Jump' but it's not.");
+		if( Q.maxItem().item.compareTo("Jump")!=0) System.out.println("Error (8): Front of queue should be 'Jump' but it's not.");
 		
-		if(Q.minItem().item.compareTo("Dance") != 0) System.out.println("minItem() should be 'Dance' but it's not.");
+		if(Q.minItem().item.compareTo("Dance") != 0) System.out.println("Error (9): minItem() should be 'Dance' but it's not. Priority: " + Q.minItem().priority);
 		
 		if( Q.count() != 4 ) {
-			System.out.println("Error: Count should be 4 but it's not.");			
+			System.out.println("Error (10): Count should be 4 but it's not.");
 		}
 		
 		// Test isFull() when not full
 		if( Q.isFull()) 
-			System.out.println("Error: Queue is not full, but isFull() says it is.");
+			System.out.println("Error (11): Queue is not full, but isFull() says it is.");
 		
 		Q.insert(new PriorityItem<String>("Eat", 10.0));
-		if( Q.maxItem().item.compareTo("Eat")!=0) System.out.println("Front of queue should be 'Eat' but it's not.");
+		if( Q.maxItem().item.compareTo("Eat")!=0) System.out.println("Error (12): Front of queue should be 'Eat' but it's not.");
 
 		if( !Q.isFull()) 
-			System.out.println("Error: Queue is full, but isFull() says it isn't.");
+			System.out.println("Error (13): Queue is full, but isFull() says it isn't.");
 
 		// Test insertion on full queue
 		try {
 			Q.insert(new PriorityItem<String>("Sleep", 15.0));
-			System.out.println("Expected ContainerFull280Exception inserting to full queue but got none.");
+			System.out.println("Error (14): Expected ContainerFull280Exception inserting to full queue but got none.");
 		}
 		catch(ContainerFull280Exception e) {
 			// Expected exception
 		}
 		catch(Exception e) {
-			System.out.println("Expected ContainerFull280Exception inserting to full queue but got a different exception.");
+			System.out.println("Error (15): Expected ContainerFull280Exception inserting to full queue but got a different exception.");
 			e.printStackTrace();
 		}
 		
 		// test deleteMin
 		Q.deleteMin();
-		if(Q.minItem().item.compareTo("Sing") != 0) System.out.println("Min item should be 'Sing', but it isn't.");
+		if(Q.minItem().item.compareTo("Sing") != 0) System.out.println("Error (16): Min item should be 'Sing', but it isn't. Priority: " + Q.minItem().priority);
 		
 		Q.insert(new PriorityItem<String>("Dig", 1.0));
-		if(Q.minItem().item.compareTo("Dig") != 0) System.out.println("minItem() should be 'Dig' but it's not.");
+		if(Q.minItem().item.compareTo("Dig") != 0) System.out.println("Error (17): minItem() should be 'Dig' but it's not. Priority: " + Q.minItem().priority);
 
 		// Test deleteMax
 		Q.deleteMax();
-		if( Q.maxItem().item.compareTo("Jump")!=0) System.out.println("Front of queue should be 'Jump' but it's not.");
+		if( Q.maxItem().item.compareTo("Jump")!=0) System.out.println("Error (18): Front of queue should be 'Jump' but it's not.");
 
 		Q.deleteMax();
-		if( Q.maxItem().item.compareTo("Fly")!=0) System.out.println("Front of queue should be 'Fly' but it's not.");
+		if( Q.maxItem().item.compareTo("Fly")!=0) System.out.println("Error (19): Front of queue should be 'Fly' but it's not.");
 
-		if(Q.minItem().item.compareTo("Dig") != 0) System.out.println("minItem() should be 'Dig' but it's not.");
+		if(Q.minItem().item.compareTo("Dig") != 0) System.out.println("Error (20): minItem() should be 'Dig' but it's not. Priority: " + Q.minItem().priority);
 
 		Q.deleteMin();
-		if( Q.maxItem().item.compareTo("Fly")!=0) System.out.println("Front of queue should be 'Fly' but it's not.");
+		if( Q.maxItem().item.compareTo("Fly")!=0) System.out.println("Error (21): Front of queue should be 'Fly' but it's not. Priority: " + Q.minItem().priority);
 
 		Q.insert(new PriorityItem<String>("Scream", 2.0));
 		Q.insert(new PriorityItem<String>("Run", 2.0));
 
-		if( Q.maxItem().item.compareTo("Fly")!=0) System.out.println("Front of queue should be 'Fly' but it's not.");
+		if( Q.maxItem().item.compareTo("Fly")!=0) System.out.println("Error (22): Front of queue should be 'Fly' but it's not.");
 		
 		// test deleteAllMax()
 		Q.deleteAllMax();
-		if( Q.maxItem().item.compareTo("Scream")!=0) System.out.println("Front of queue should be 'Scream' but it's not.");
-		if( Q.minItem().item.compareTo("Scream") != 0) System.out.println("minItem() should be 'Scream' but it's not.");
+		if( Q.maxItem().item.compareTo("Scream")!=0) System.out.println("Error (23): Front of queue should be 'Scream' but it's not.");
+		if( Q.minItem().item.compareTo("Scream") != 0) System.out.println("Error (24): minItem() should be 'Scream' but it's not.");
 		Q.deleteAllMax();
 
 		// Queue should now be empty again.
 		if( !Q.isEmpty()) 
-			System.out.println("Error: Queue is empty, but isEmpty() says it isn't.");
+			System.out.println("Error (25): Queue is empty, but isEmpty() says it isn't.");
 
 		System.out.println("Regression test complete.");
 	}
 
-
-	*/
 }
