@@ -147,7 +147,7 @@ public class QuestLog extends KeyedChainedHashTable280<String, QuestLogEntry> {
 		CSVReader inFile;
 		try {
 			//input filename on the next line - path must be relative to the working directory reported above.
-			inFile = new CSVReader(new FileReader("../../../git-repos/CMPT280/a5/QuestLog-Template/quests4.csv"));
+			inFile = new CSVReader(new FileReader("../../../git-repos/CMPT280/a5/QuestLog-Template/quests100000.csv"));
 		} catch (FileNotFoundException e) {
 			System.out.println("Error: File not found.");
 			return;
@@ -173,14 +173,11 @@ public class QuestLog extends KeyedChainedHashTable280<String, QuestLogEntry> {
 			e.printStackTrace();
 		}
 		
-		// Print out the hashed quest log's quests in alphabetical order.
-		// COMMENT THIS OUT when you're testing the file with 100,000 quests.  It takes way too long.
-		System.out.println(hashQuestLog);
-		
-		// Print out the lib280.tree quest log's quests in alphabetical order.
-		// COMMENT THIS OUT when you're testing the file with 100,000 quests.  It takes way too long.
+//		// Print out the hashed quest log's quests in alphabetical order.
+//		System.out.println(hashQuestLog);
+//
+//		// Print out the lib280.tree quest log's quests in alphabetical order.
 //	    System.out.println(treeQuestLog.toStringInorder());
-
 
 		/* Testing Hashed QuestLog */
 		Pair280 results = new Pair280(null, 0);

@@ -1,0 +1,33 @@
+CMPT 280
+Assignment 5, Question 2
+
+Tyrel Kostyk
+11216033
+TCK290
+
+
+1.
+Filename		Avg Queries for hashQuestLog	Avg Queries for treeQuestLog
+quests4.csv		1.25				2.0
+quests16.csv		1.125				4.0
+quests250.csv		1.232				13.34
+quests1000.csv		2.148				18.08
+quests100000.csv	1.45367				30.8778
+
+2.
+O(1)
+
+3.
+O(log n)
+
+4.
+I would use the hashed quest log, since it stores the keys - which are atomic
+objects (Strings). An array of Strings is easy to sort compared to compound
+data types. The tradeoff cost with the Hashed Quest Log is wsated memory space,
+but if my primary use is displaying all information, then the speed benefits are
+worth the tradeoff.
+
+5.
+I would use the tree quest log, since it provides the most memory efficient data
+storage, which is worth the timing complexity cost since accesses are only
+periodic.
