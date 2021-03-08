@@ -99,7 +99,7 @@ public class ArrayedBinaryTreeIterator280<I> extends ArrayedBinaryTreePosition28
 	 */
 	@Override
 	public I item() throws NoCurrentItem280Exception {
-		// store previous node, then update the trees node to that of the iterator
+		// store previous node, then match the tree's node to that of the iterator
 		int previousNode = tree.currentNode;
 		tree.currentNode = this.currentNode;
 
@@ -123,7 +123,7 @@ public class ArrayedBinaryTreeIterator280<I> extends ArrayedBinaryTreePosition28
 	 */
 	@Override
 	public boolean itemExists() {
-		// store previous node, then update the trees node to that of the iterator
+		// store previous node, then match the tree's node to that of the iterator
 		int previousNode = tree.currentNode;
 		tree.currentNode = this.currentNode;
 

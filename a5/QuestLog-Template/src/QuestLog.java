@@ -106,16 +106,28 @@ public class QuestLog extends KeyedChainedHashTable280<String, QuestLogEntry> {
 	 *         Note: if no quest named k is found, then the first item of the pair should be null.
 	 */
 	public Pair280<QuestLogEntry, Integer> obtainWithCount(String k) {
-		// TODO Implement this method.
-		
-		// Write a method that returns a Pair280 which contains the quest log entry with name k, 
-		// and the number QuestLogEntry objects that were examined in the process.  You need to write
-		// this method from scratch without using any of the superclass methods (mostly because 
-		// the superclass methods won't be terribly useful unless you can modify them, which you
-		// aren't allowed to do!).
-		
-	
-		return null;  // Remove this line you're ready.  It's just to prevent compiler errors.
+		Pair280 pair = new Pair280(null, 0);
+		int itemsChecked = 0;
+
+		/* search code copied from KeyedChainedHashTable280 */
+		int itemHashLocation = this.hashPos(k);
+		if (searchesContinue && itemListLocation != null) {
+			goForth();
+		} else {
+			if (hashArray[itemHashLocation] == null)
+				hashArray[itemHashLocation] = newChain();
+			itemListLocation = hashArray[itemHashLocation].iterator();
+		}
+
+		while (!itemListLocation.after() && k.compareTo(itemListLocation.item().key()) != 0 ) {
+			itemListLocation.goForth();
+			itemsChecked++;
+		}
+
+		// update the pair and return it
+		pair.setFirstItem(item());
+		pair.setSecondItem(itemsChecked);
+		return pair;
 	}
 	
 	
