@@ -120,14 +120,20 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 			
 			// TODO Link newLeaf to its proper successor/predecessor nodes and
 			//  adjust links of successor/predecessor nodes accordingly.
-			
+
+			newLeaf.setNext(oldLeaf);
+			oldLeaf.setPrev(newLeaf);
+
 			// Also adjust this.largest if necessary.
-			
+
+			if (newLeaf.getKey1().compareTo(oldLeaf.getKey2()) > 0) {
+				this.largest = newLeaf;
+			}
+
 			// (this.smallest will never need adjustment because if a new
 			//  smallest element is inserted, it gets put in the existing 
 			//  leaf node, and the old smallest element is copied to a  
 			//  new node -- this is "true" case for the previous if/else.)
-			
 		
 			return extraNode;
 		}
