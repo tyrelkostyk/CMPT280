@@ -113,7 +113,7 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 				extraNode = new Pair280<TwoThreeNode280<K,I>, K>(createNewLeafNode(newItem), newItem.key());
 			}
 			
-			LinkedLeafTwoThreeNode280<K,I> newLeaf= (LinkedLeafTwoThreeNode280<K, I>) extraNode.firstItem();
+			LinkedLeafTwoThreeNode280<K,I> newLeaf = (LinkedLeafTwoThreeNode280<K, I>) extraNode.firstItem();
 		
 			// No matter what happens above, the node 'newLeaf' is a new leaf node that is 
 			// immediately to the right of the node 'oldLeaf'.
@@ -121,14 +121,19 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 			// TODO Link newLeaf to its proper successor/predecessor nodes and
 			//  adjust links of successor/predecessor nodes accordingly.
 
-			newLeaf.setNext(oldLeaf);
-			oldLeaf.setPrev(newLeaf);
+			// connect newLeaf
+			newLeaf.setNext(oldLeaf.next());
+			newLeaf.setPrev(oldLeaf);
+
+			// update the leaf node that used to be to the right of oldLeaf
+			oldLeaf.next().setPrev(newLeaf);
+
+			// update oldLead
+			oldLeaf.setNext(newLeaf);
 
 			// Also adjust this.largest if necessary.
 
-			if (newLeaf.getKey1().compareTo(oldLeaf.getKey2()) > 0) {
-				this.largest = newLeaf;
-			}
+			this.largest = newLeaf;
 
 			// (this.smallest will never need adjustment because if a new
 			//  smallest element is inserted, it gets put in the existing 
@@ -281,9 +286,15 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 				// TODO Unlink leaf from it's linear successor/predecessor
 				//  Hint: Be prepared to typecast where appropriate.
 
-				
-				
-				
+				// grab the leaf to delete
+				LinkedLeafTwoThreeNode280<K,I> leafToDelete = (LinkedLeafTwoThreeNode280<K, I>) root.getLeftSubtree();
+
+				// update the linear successor
+				leafToDelete.next().setPrev(leafToDelete.prev());
+
+				// update the linear predecessor
+				leafToDelete.prev().setNext(leafToDelete.next());
+
 				// Proceed with deletion of leaf from the 2-3 tree.
 				root.setLeftSubtree(root.getMiddleSubtree());
 				root.setMiddleSubtree(root.getRightSubtree());
@@ -299,10 +310,16 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 
 				// TODO Unlink leaf from it's linear successor/predecessor
 				//  Hint: Be prepared to typecast where appropriate.
-		
-				
-				
-				
+
+				// grab the leaf to delete
+				LinkedLeafTwoThreeNode280<K,I> leafToDelete = (LinkedLeafTwoThreeNode280<K, I>) root.getMiddleSubtree();
+
+				// update the linear successor
+				leafToDelete.next().setPrev(leafToDelete.prev());
+
+				// update the linear predecessor
+				leafToDelete.prev().setNext(leafToDelete.next());
+
 				// Proceed with deletion from the 2-3 tree.
 				root.setMiddleSubtree(root.getRightSubtree());				
 				if(root.getMiddleSubtree() == null)
@@ -321,8 +338,14 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 				// TODO Unlink leaf from it's linear successor/predecessor
 				//  Hint: Be prepared to typecast where appropriate.
 
-				
-				
+				// grab the leaf to delete
+				LinkedLeafTwoThreeNode280<K,I> leafToDelete = (LinkedLeafTwoThreeNode280<K, I>) root.getRightSubtree();
+
+				// update the linear successor
+				leafToDelete.next().setPrev(leafToDelete.prev());
+
+				// update the linear predecessor
+				leafToDelete.prev().setNext(leafToDelete.next());
 				
 				// Proceed with deletion of the node from the 2-3 tree.
 				root.setKey2(null);
