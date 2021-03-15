@@ -665,6 +665,49 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 		if ( !T.after() )
 			System.out.println("06: Should be after(), but we're not");
 
+		if ( T.itemExists() )
+			System.out.println("07: Says item exists after tree, but it shouldn't");
+
+		T.goBefore();
+		if ( T.itemExists() )
+			System.out.println("08: Says item exists before tree, but it shouldn't");
+
+		if ( !T.before() )
+			System.out.println("09: Should be before(), but we're not");
+
+		T.goAfter();
+		if ( T.itemExists() )
+			System.out.println("10: Says item exists after tree, but it shouldn't");
+
+		T.goFirst();
+		if ( !T.itemKey().equals(sampleOne.key()) )
+			System.out.println("11: Expected item to be " + sampleOne.key() + " but got " + T.itemKey());
+
+		T.goForth();
+		if ( !T.keyItemPair().firstItem().equals(sampleTwo.key()) )
+			System.out.println("12: Expected item to be " + sampleTwo.key() + " but got " + T.keyItemPair().firstItem());
+
+		T.deleteItem();
+		if ( !T.itemKey().equals(sampleThree.key()) )
+			System.out.println("13: Expected item to be " + sampleThree.key() + " but got " + T.itemKey());
+
+		T.search(sampleTwo.key());
+		if ( !T.after() )
+			System.out.println("14: Should be after(), but we're not");
+
+		T.search(sampleOne.key());
+		if ( !T.itemKey().equals(sampleOne.key()) )
+			System.out.println("15: Expected item to be " + sampleOne.key() + " but got " + T.itemKey());
+
+		Loot sampleOneUpdate = new Loot("AAA", 1000000);
+
+		T.setItem(sampleOneUpdate);
+		if ( !T.itemKey().equals(sampleOneUpdate.key()) )
+			System.out.println("16: Expected item to be " + sampleOneUpdate.key() + " but got " + T.itemKey());
+
+		T.searchCeilingOf(sampleOneUpdate.key());
+		if ( !T.itemKey().equals(sampleOneUpdate.key()) )
+			System.out.println("17: Expected item to be " + sampleOneUpdate.key() + " but got " + T.itemKey());
 
 		System.out.println("Regression Test Completed.");
 
