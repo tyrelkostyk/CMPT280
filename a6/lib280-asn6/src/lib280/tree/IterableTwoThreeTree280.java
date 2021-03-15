@@ -125,7 +125,8 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 			newLeaf.setPrev(oldLeaf);
 
 			// update the leaf node that used to be to the right of oldLeaf
-			oldLeaf.next().setPrev(newLeaf);
+			if (oldLeaf != this.largest)
+				oldLeaf.next().setPrev(newLeaf);
 
 			// update oldLead
 			oldLeaf.setNext(newLeaf);
@@ -625,19 +626,47 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 		}
 		
 		// Create a tree to test with. 
-		IterableTwoThreeTree280<String, Loot> T =
-				new IterableTwoThreeTree280<String, Loot>();
-
-		// An example of instantiating an item. (you can remove this if you wish)
-		Loot sampleItem = new Loot("Magic Armor", 1000);
-
-		// Insert your first item! (you can remove this if you wish)
-		T.insert(sampleItem);
+		IterableTwoThreeTree280<String, Loot> T = new IterableTwoThreeTree280<String, Loot>();
 
 		/** Student code BEGIN */
 
+		Loot sampleOne = new Loot("AAA", 1000);
+		T.insert(sampleOne);
+
+		Loot sampleTwo = new Loot("BBB", 5000);
+		T.insert(sampleTwo);
+
+		Loot sampleThree = new Loot("QQQ", 200);
+		T.insert(sampleThree);
+
+		Loot sampleFour = new Loot("ZZZ", 2000);
+		T.insert(sampleFour);
+
+		if ( !T.before() )
+			System.out.println("01: Should be before(), but we're not");
+
+		T.goFirst();
+		if ( !T.item().key().equals(sampleOne.key()) )
+			System.out.println("02: Expected item to be " + sampleOne.key() + " but got " + T.item().key());
+
+		T.goForth();
+		if ( !T.item().key().equals(sampleTwo.key()) )
+			System.out.println("03: Expected item to be " + sampleTwo.key() + " but got " + T.item().key());
+
+		T.goForth();
+		if ( !T.item().key().equals(sampleThree.key()) )
+			System.out.println("04: Expected item to be " + sampleThree.key() + " but got " + T.item().key());
+
+		T.goForth();
+		if ( !T.item().key().equals(sampleFour.key()) )
+			System.out.println("05: Expected item to be " + sampleFour.key() + " but got " + T.item().key());
+
+		T.goForth();
+		if ( !T.after() )
+			System.out.println("06: Should be after(), but we're not");
 
 
+		System.out.println("Regression Test Completed.");
 
 		/** Student code END */
 	}
