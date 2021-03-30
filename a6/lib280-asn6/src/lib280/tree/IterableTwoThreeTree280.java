@@ -117,16 +117,16 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 		
 			// No matter what happens above, the node 'newLeaf' is a new leaf node that is 
 			// immediately to the right of the node 'oldLeaf'.
-			
-			// TODO Link newLeaf to its proper successor/predecessor nodes and
-			//  adjust links of successor/predecessor nodes accordingly.
+
+			/** Student code BEGIN */
 
 			// connect newLeaf
 			newLeaf.setNext(oldLeaf.next());
 			newLeaf.setPrev(oldLeaf);
 
 			// update the leaf node that used to be to the right of oldLeaf
-			oldLeaf.next().setPrev(newLeaf);
+			if (oldLeaf != this.largest)
+				oldLeaf.next().setPrev(newLeaf);
 
 			// update oldLead
 			oldLeaf.setNext(newLeaf);
@@ -134,6 +134,8 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 			// Also adjust this.largest if necessary.
 
 			this.largest = newLeaf;
+
+			/** Student code END */
 
 			// (this.smallest will never need adjustment because if a new
 			//  smallest element is inserted, it gets put in the existing 
@@ -283,17 +285,26 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 			if( root.getLeftSubtree().getKey1().compareTo(keyToDelete) == 0 ) {
 				// leaf to delete is on left
 
-				// TODO Unlink leaf from it's linear successor/predecessor
-				//  Hint: Be prepared to typecast where appropriate.
+				/** Student code BEGIN */
 
 				// grab the leaf to delete
 				LinkedLeafTwoThreeNode280<K,I> leafToDelete = (LinkedLeafTwoThreeNode280<K, I>) root.getLeftSubtree();
+
+				// update smallest value if necessary
+				if (leafToDelete.getKey1().compareTo(this.smallest.getKey1()) == 0)
+					this.smallest = leafToDelete.next();
+
+				// update largest value if necessary
+				if (leafToDelete.getKey1().compareTo(this.largest.getKey1()) == 0)
+					this.largest = leafToDelete.prev();
 
 				// update the linear successor
 				leafToDelete.next().setPrev(leafToDelete.prev());
 
 				// update the linear predecessor
 				leafToDelete.prev().setNext(leafToDelete.next());
+
+				/** Student code END */
 
 				// Proceed with deletion of leaf from the 2-3 tree.
 				root.setLeftSubtree(root.getMiddleSubtree());
@@ -308,17 +319,26 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 			else if( root.getMiddleSubtree().getKey1().compareTo(keyToDelete) == 0 ) {
 				// leaf to delete is in middle
 
-				// TODO Unlink leaf from it's linear successor/predecessor
-				//  Hint: Be prepared to typecast where appropriate.
+				/** Student code BEGIN */
 
 				// grab the leaf to delete
 				LinkedLeafTwoThreeNode280<K,I> leafToDelete = (LinkedLeafTwoThreeNode280<K, I>) root.getMiddleSubtree();
+
+				// update smallest value if necessary
+				if (leafToDelete.getKey1().compareTo(this.smallest.getKey1()) == 0)
+					this.smallest = leafToDelete.next();
+
+				// update largest value if necessary
+				if (leafToDelete.getKey1().compareTo(this.largest.getKey1()) == 0)
+					this.largest = leafToDelete.prev();
 
 				// update the linear successor
 				leafToDelete.next().setPrev(leafToDelete.prev());
 
 				// update the linear predecessor
 				leafToDelete.prev().setNext(leafToDelete.next());
+
+				/** Student code END */
 
 				// Proceed with deletion from the 2-3 tree.
 				root.setMiddleSubtree(root.getRightSubtree());				
@@ -335,18 +355,27 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 			else if( root.getRightSubtree() != null && root.getRightSubtree().getKey1().compareTo(keyToDelete) == 0 ) {
 				// leaf to delete is on the right
 
-				// TODO Unlink leaf from it's linear successor/predecessor
-				//  Hint: Be prepared to typecast where appropriate.
+				/** Student code BEGIN */
 
 				// grab the leaf to delete
 				LinkedLeafTwoThreeNode280<K,I> leafToDelete = (LinkedLeafTwoThreeNode280<K, I>) root.getRightSubtree();
+
+				// update smallest value if necessary
+				if (leafToDelete.getKey1().compareTo(this.smallest.getKey1()) == 0)
+					this.smallest = leafToDelete.next();
+
+				// update largest value if necessary
+				if (leafToDelete.getKey1().compareTo(this.largest.getKey1()) == 0)
+					this.largest = leafToDelete.prev();
 
 				// update the linear successor
 				leafToDelete.next().setPrev(leafToDelete.prev());
 
 				// update the linear predecessor
 				leafToDelete.prev().setNext(leafToDelete.next());
-				
+
+				/** Student code END */
+
 				// Proceed with deletion of the node from the 2-3 tree.
 				root.setKey2(null);
 				root.setRightSubtree(null);
@@ -360,10 +389,14 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 	
 	@Override
 	public K itemKey() throws NoCurrentItem280Exception {
-		// TODO Return the key of the item in the node on which the cursor is positioned.
-		
-		// This is just a placeholder to avoid compile errors. Remove it when ready.
-		return null;  
+		/** Student code BEGIN */
+
+		if( !itemExists() )
+			throw new NoCurrentItem280Exception("There is no current item from which to obtain its key.");
+
+		return this.cursor.getKey1();
+
+		/** Student code END */
 	}
 
 
@@ -380,10 +413,14 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 
 	@Override
 	public I item() throws NoCurrentItem280Exception {
-		// TODO Return the item in the node at which the cursor is positioned.
+		/** Student code BEGIN */
 
-		// This is just a placeholder to avoid compile errors. Remove it when ready.
-		return null;  
+		if( !itemExists() )
+			throw new NoCurrentItem280Exception("There is no current item to obtain.");
+
+		return this.cursor.getData();
+
+		/** Student code END */
 	}
 
 
@@ -458,13 +495,24 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 
 
 	public void search(K k) {
-		// TODO Position the cursor at the item with key k (if such an item exists).
-		//  Don't use the cursor for this -- this will cause the search to be O(n).
-		//  Instead, Use the inherited protected find() method to locate the node containing k if it exists,
-		//  then adjust the cursor variables to refer to it.  find() is O(log n).
-		//  If no item with key k can be found leave the cursor in the after position.
-		
+		/** Student code BEGIN
+		 *
+		 * NOTE: This code was somewhat copied from the find(k) function in TwoThreeTree280.
+		 */
 
+		TwoThreeNode280<K,I> itemNode = find(this.rootNode, k);
+
+		// if item is null, just place cursor after the end of the data structure
+		if( itemNode == null ) {
+			goAfter();
+
+		// otherwise, update the cursor pointers to point at the found item
+		} else {
+			this.prev = cursor;
+			this.cursor = (LinkedLeafTwoThreeNode280<K, I>) itemNode;
+		}
+
+		/** Student code END */
 	}
 
 
@@ -493,28 +541,42 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 		
 	}
 
+
 	@Override
 	public void setItem(I x) throws NoCurrentItem280Exception,
             InvalidArgument280Exception {
-		// TODO Store the item x in the node at which the cursor is positioned *if* the item in that node's key
-		//   matches the key of x. Otherwise throw an exception indicating that the item in the node can't be replaced
-		//   becuase it's key does not match the key of x.
-		//
+		/** Student code BEGIN */
+
+		if( !itemExists() )
+			throw new NoCurrentItem280Exception("There is no current item to set.");
+
+		else if( this.cursor.getKey1() != x.key() )
+			throw new InvalidArgument280Exception("Can't set item with unmatched key.");
+
+		this.cursor.setData(x);
+
+		/** Student code END */
 	}
 
 
 	@Override
 	public void deleteItem() throws NoCurrentItem280Exception {
-		// TODO Remove the item at which the cursor is positioned from the tree.
-		// Leave the cursor on the successor of the deleted item.
-	
-		// Hint: If this takes more than 5 or 6 lines, you're doing it wrong!
+		/** Student code BEGIN */
+
+		// grab the successor of the leaf to delete
+		LinkedLeafTwoThreeNode280<K,I> successor = (LinkedLeafTwoThreeNode280<K, I>) this.cursor.next();
+
+		// delete the leaf
+		delete(this.cursor.getKey1());
+
+		// update the cursor position
+		this.prev = this.cursor;
+		this.cursor = successor;
+
+		/** Student code END */
 	}
 
 
-	
-	
-	
     @Override
     public String toStringByLevel() {
         String s = super.toStringByLevel();
@@ -564,17 +626,92 @@ public class IterableTwoThreeTree280<K extends Comparable<? super K>, I extends 
 		}
 		
 		// Create a tree to test with. 
-		IterableTwoThreeTree280<String, Loot> T =
-				new IterableTwoThreeTree280<String, Loot>();
+		IterableTwoThreeTree280<String, Loot> T = new IterableTwoThreeTree280<String, Loot>();
 
-		// An example of instantiating an item. (you can remove this if you wish)
-		Loot sampleItem = new Loot("Magic Armor", 1000);
+		/** Student code BEGIN */
 
-		// Insert your first item! (you can remove this if you wish)
-		T.insert(sampleItem);
+		Loot sampleOne = new Loot("AAA", 1000);
+		T.insert(sampleOne);
 
-		// TODO Write your regression test here
-	
+		Loot sampleTwo = new Loot("BBB", 5000);
+		T.insert(sampleTwo);
+
+		Loot sampleThree = new Loot("QQQ", 200);
+		T.insert(sampleThree);
+
+		Loot sampleFour = new Loot("ZZZ", 2000);
+		T.insert(sampleFour);
+
+		if ( !T.before() )
+			System.out.println("01: Should be before(), but we're not");
+
+		T.goFirst();
+		if ( !T.item().key().equals(sampleOne.key()) )
+			System.out.println("02: Expected item to be " + sampleOne.key() + " but got " + T.item().key());
+
+		T.goForth();
+		if ( !T.item().key().equals(sampleTwo.key()) )
+			System.out.println("03: Expected item to be " + sampleTwo.key() + " but got " + T.item().key());
+
+		T.goForth();
+		if ( !T.item().key().equals(sampleThree.key()) )
+			System.out.println("04: Expected item to be " + sampleThree.key() + " but got " + T.item().key());
+
+		T.goForth();
+		if ( !T.item().key().equals(sampleFour.key()) )
+			System.out.println("05: Expected item to be " + sampleFour.key() + " but got " + T.item().key());
+
+		T.goForth();
+		if ( !T.after() )
+			System.out.println("06: Should be after(), but we're not");
+
+		if ( T.itemExists() )
+			System.out.println("07: Says item exists after tree, but it shouldn't");
+
+		T.goBefore();
+		if ( T.itemExists() )
+			System.out.println("08: Says item exists before tree, but it shouldn't");
+
+		if ( !T.before() )
+			System.out.println("09: Should be before(), but we're not");
+
+		T.goAfter();
+		if ( T.itemExists() )
+			System.out.println("10: Says item exists after tree, but it shouldn't");
+
+		T.goFirst();
+		if ( !T.itemKey().equals(sampleOne.key()) )
+			System.out.println("11: Expected item to be " + sampleOne.key() + " but got " + T.itemKey());
+
+		T.goForth();
+		if ( !T.keyItemPair().firstItem().equals(sampleTwo.key()) )
+			System.out.println("12: Expected item to be " + sampleTwo.key() + " but got " + T.keyItemPair().firstItem());
+
+		T.deleteItem();
+		if ( !T.itemKey().equals(sampleThree.key()) )
+			System.out.println("13: Expected item to be " + sampleThree.key() + " but got " + T.itemKey());
+
+		T.search(sampleTwo.key());
+		if ( !T.after() )
+			System.out.println("14: Should be after(), but we're not");
+
+		T.search(sampleOne.key());
+		if ( !T.itemKey().equals(sampleOne.key()) )
+			System.out.println("15: Expected item to be " + sampleOne.key() + " but got " + T.itemKey());
+
+		Loot sampleOneUpdate = new Loot("AAA", 1000000);
+
+		T.setItem(sampleOneUpdate);
+		if ( !T.itemKey().equals(sampleOneUpdate.key()) )
+			System.out.println("16: Expected item to be " + sampleOneUpdate.key() + " but got " + T.itemKey());
+
+		T.searchCeilingOf(sampleOneUpdate.key());
+		if ( !T.itemKey().equals(sampleOneUpdate.key()) )
+			System.out.println("17: Expected item to be " + sampleOneUpdate.key() + " but got " + T.itemKey());
+
+		System.out.println("Regression Test Completed.");
+
+		/** Student code END */
 	}
 
 

@@ -1,0 +1,13 @@
+1: Superpowers, Cost: 5
+     2: Power, Cost: 8
+          3: Mind Control, Cost: 15
+          3: - 
+     2: Love, Cost: 8
+          3: Charm, Cost: 12
+          3: - 
+     2: Wisdom, Cost: 8
+          3: Telekinesis, Cost: 15
+          3: Mind Reading, Cost: 15
+     2: Freedom, Cost: 10
+          3: Flight, Cost: 20
+          3: Invisibility, Cost: 15
