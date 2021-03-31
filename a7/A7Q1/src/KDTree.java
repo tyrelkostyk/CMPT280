@@ -9,7 +9,9 @@ public class KDTree {
         if (points.length == 0)
             return;
 
-        if (depth > points[0].point().dim())
+//        if (depth > points[0].point().dim())
+//            return;
+        if (right-left < 0)
             return;
 
         int k = points[0].point().dim();
@@ -18,16 +20,14 @@ public class KDTree {
 
         jSmallest(points, left, right, medianOffset, dimToEval);
 
-//        System.out.println("Adding Node; Depth: " + depth);
-//        System.out.println("Adding Node; Value: " + points[medianOffset].point().toString());
-//        System.out.println();
+        // set root node
         this.rootNode = points[medianOffset];
 
-//        System.out.println("Adding Left Node");
+        // set left child node
         KDTree leftNode = new KDTree(points, left, medianOffset-1, depth+1);
         this.rootNode.setLeftChild(leftNode.rootNode);
 
-//        System.out.println("Adding Right Node");
+        // set right child node
         KDTree rightNode = new KDTree(points, medianOffset+1, right, depth+1);
         this.rootNode.setRightChild(rightNode.rootNode);
     }
@@ -124,8 +124,42 @@ public class KDTree {
 
         System.out.println("UNIT TEST ONE of KDTree complete.");
 
-//        /* TEST TWO */
-//        System.out.println("UNIT TEST TWO of KDTree begin.");
-//        System.out.println("UNIT TEST TWO of KDTree complete.");
+
+        /* TEST TWO */
+
+        Double[] point3dOne = {1.0, 12.0, 0.0};
+        KDNode280 node3dOne = new KDNode280(point3dOne);
+        Double[] point3dTwo = {18.0, 1.0, 2.0};
+        KDNode280 node3dTwo = new KDNode280(point3dTwo);
+        Double[] point3dThree = {2.0, 13.0, 16.0};
+        KDNode280 node3dThree = new KDNode280(point3dThree);
+        Double[] point3dFour = {7.0, 3.0, 3.0};
+        KDNode280 node3dFour = new KDNode280(point3dFour);
+        Double[] point3dFive = {3.0, 7.0, 5.0};
+        KDNode280 node3dFive = new KDNode280(point3dFive);
+        Double[] point3dSix = {16.0, 4.0, 4.0};
+        KDNode280 node3dSix = new KDNode280(point3dSix);
+        Double[] point3dSeven = {4.0, 6.0, 1.0};
+        KDNode280 node3dSeven = new KDNode280(point3dSeven);
+        KDNode280[] nodes3d = {node3dOne, node3dTwo, node3dThree, node3dFour, node3dFive, node3dSix, node3dSeven};
+
+        System.out.println("UNIT TEST TWO of KDTree begin.");
+
+        System.out.println("Input 3D nodes:");
+        for (KDNode280 node : nodes3d) {
+            System.out.println(node.point().toString());
+        }
+
+        // create tree
+        KDTree testTree3D = new KDTree(nodes3d, 0, nodes3d.length-1, 0);
+
+        // test dimensions of new tree
+        if (testTree3D.dim() != pointOne.length)
+            System.out.println("01: dim should be " + pointOne.length + ", but instead it is " + testTree3D.dim());
+
+        System.out.println("\n" + testTree3D);
+
+        System.out.println("UNIT TEST TWO of KDTree complete.");
+
     }
 }
