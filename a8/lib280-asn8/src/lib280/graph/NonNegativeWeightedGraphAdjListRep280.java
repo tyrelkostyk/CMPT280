@@ -7,6 +7,7 @@
  import lib280.base.Pair280;
  import lib280.exception.InvalidArgument280Exception;
 
+ import java.util.Arrays;
  import java.util.InputMismatchException;
  import java.util.Scanner;
 
@@ -55,8 +56,56 @@
      public Pair280<double[], int[]> shortestPathDijkstra(int startVertex) {
          // TODO Implement this method
 
+         // initialize arrays for tracking states and values of each node
+         double tentativeDistance[] = new double[capacity()+1];
+         boolean visited[] = new boolean[capacity()+1];
+         int predecessorNode[] = new int[capacity()+1];
+
+         // set default values for the internal arrays
+         Arrays.fill(tentativeDistance, Double.POSITIVE_INFINITY);
+         Arrays.fill(visited, false);
+         Arrays.fill(predecessorNode, 0);
+
+         // set initial distance for starter node
+         tentativeDistance[startVertex] = 0;
+
+         // set initial loop variables for tracking nodes
+         int currentNode = startVertex;
+         int adjacentNode = 0;
+
+         // continue until all nodes have been visited
+         this.goIndex(currentNode);
+         while (this.itemExists()) {
+             visited[currentNode] = true;
+
+             // evaluate each edge that connects to a non-visited node
+             this.eGoFirst(this.item());
+             while (!this.eAfter()) {
+                 adjacentNode = this.eItemAdjacentIndex();
+                 double newDistance = tentativeDistance[currentNode] + this.getEdgeWeight(adjacentNode, currentNode);
+                 // update the adjacent node's values if it has not been visited and the new distance is shorter
+                 if ((!visited[adjacentNode]) && (tentativeDistance[adjacentNode] > (newDistance))) {
+                    tentativeDistance[adjacentNode] = newDistance;
+                    predecessorNode[adjacentNode] = currentNode;
+                 }
+                 // continue to the next edge
+                 this.eGoForth();
+             }
+
+             // find the next node to process
+             int nextNode = 0;
+             for (int i=1; i<tentativeDistance.length; i++) {
+                 if ((!visited[i]) && (tentativeDistance[i] < tentativeDistance[nextNode]))
+                     nextNode = i;
+             }
+
+             // continue to the next node
+             currentNode = nextNode;
+             this.goIndex(currentNode);
+         }
+
          // Remove this return statement when you're ready -- it's a placeholder to prevent a compiler error.
-         return new Pair280<double[], int[]>(null, null);
+         return new Pair280<double[], int[]>(tentativeDistance, predecessorNode);
      }
 
      // Given a predecessors array output from this.shortestPathDijkatra, return a string
@@ -72,7 +121,7 @@
          NonNegativeWeightedGraphAdjListRep280<Vertex280> G = new NonNegativeWeightedGraphAdjListRep280<Vertex280>(1, false);
 
          if( args.length == 0)
-             G.initGraphFromFile("lib280-asn8/src/lib280/graph/weightedtestgraph.gra");
+             G.initGraphFromFile("../../../git-repos/CMPT280/a8/lib280-asn8/src/lib280/graph/weightedtestgraph.gra");
          else
              G.initGraphFromFile(args[0]);
 
