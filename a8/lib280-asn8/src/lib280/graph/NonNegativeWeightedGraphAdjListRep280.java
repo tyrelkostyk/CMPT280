@@ -54,8 +54,6 @@
       *         at 1.
       */
      public Pair280<double[], int[]> shortestPathDijkstra(int startVertex) {
-         // TODO Implement this method
-
          // initialize arrays for tracking states and values of each node
          double tentativeDistance[] = new double[capacity()+1];
          boolean visited[] = new boolean[capacity()+1];
@@ -111,9 +109,22 @@
      // Given a predecessors array output from this.shortestPathDijkatra, return a string
      // that represents a path from the start node to the given destination vertex 'destVertex'.
      private static String extractPath(int[] predecessors, int destVertex) {
-         // TODO Implement this method
+         if (predecessors[destVertex] == 0)
+             return "Not Reachable";
 
-         return "";  // Remove this when you're ready -- this is a placeholder to prevent a compiler error.
+         // initialize string
+         String reversePath = ", " + destVertex;
+
+         // iterate and add each step along the way
+         int node = predecessors[destVertex];
+         while (predecessors[node] != 0) {
+             reversePath = ", " + node + reversePath;
+             node = predecessors[node];
+         }
+         // add the final (aka, the initial) node in the path
+         reversePath = node + reversePath;
+
+         return "The path to " + destVertex + " is: " + reversePath;
      }
 
      // Regression Test
