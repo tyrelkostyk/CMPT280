@@ -9,10 +9,19 @@ import lib280.tree.AVLTree280;
  * Final Exam - Q1
  * April 21 2021
  *
- * Bag280.java
+ * Bag.java
  */
 
 
+/**
+ * This Bag class offers an API to insert, remove, and count elements in a container,
+ * allowing duplicates. It extends the AVLTree280 class for efficient storage and search
+ * operations.
+ *
+ * It offers O(log n) time complexity or better on all operations.
+ *
+ * @param <T> The (generic) element data type within the Stack that the AVL tree holds.
+ */
 public class Bag<T extends Comparable<? super T>> extends AVLTree280<ComparableArrayedStack<T>> {
 
     /** The number of duplicates allowed for each unique item */
@@ -39,6 +48,11 @@ public class Bag<T extends Comparable<? super T>> extends AVLTree280<ComparableA
         search(tempStack);
     }
 
+    /**
+     * Determine the number of copies of a particular element within this Bag.
+     * @param x The element to count the number of copies of.
+     * @return The number of copies of the given element that are in this Bag.
+     */
     public int numberIn(T x) {
         // set the cursor at the element holding x (or duplicates of x)
         find(x);
@@ -52,6 +66,10 @@ public class Bag<T extends Comparable<? super T>> extends AVLTree280<ComparableA
         return 0;
     }
 
+    /**
+     * Insert an element into the Bag.
+     * @param x The element to insert.
+     */
     public void add(T x) {
         // set the cursor at the element holding x (or duplicates of x)
         find(x);
@@ -68,6 +86,10 @@ public class Bag<T extends Comparable<? super T>> extends AVLTree280<ComparableA
         }
     }
 
+    /**
+     * Remove a single copy of an element in this Bag.
+     * @param x The element to remove a copy of.
+     */
     public void remove(T x) {
         // set the cursor at the element holding x (or duplicates of x)
         find(x);
